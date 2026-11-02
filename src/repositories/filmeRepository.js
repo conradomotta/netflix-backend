@@ -1,19 +1,44 @@
-// Nosso "banco de dados" simulado na memória
-const filmes = [
-  { id: 1, titulo: 'Stranger Things', categoria: 'Serie', ano: 2016 },
-  { id: 2, titulo: 'O Oco do Diabo', categoria: 'Filme', ano: 2023 },
-  { id: 3, titulo: 'Round 6', categoria: 'Serie', ano: 2021 },
-  { id: 4, titulo: 'Interstellar', categoria: 'Filme', ano: 2014 },
-  { id: 5, titulo: 'Matrix', categoria: 'Filme', ano: 1999 }
-];
+import { conectarBanco } from '../database/sqlite.js';
 
 export const filmeRepository = {
-  buscarTodos: () => filmes,
-  
-  buscarPorId: (id) => filmes.find(f => f.id === id),
-  
-  buscarPorCategoria: (categoria) => 
-    filmes.filter(f => f.categoria.toLowerCase() === categoria.toLowerCase()),
+  // 1. Busca todos os filmes usando SQL: SELECT * FROM filmes
+  buscarTodos: async () => {
+    const db = await conectarBanco();
+    return await db.all('SELECT * FROM filmes');
+  },
+
+  // 2. Busca filme por ID usando SQL: SELECT com WHERE id = ?
+  buscarPorId: async (id) => {
+    const db = await conectarBanco();
+    return await db.get('SELECT * FROM filmes WHERE id = ?', [id]);
+  },
+
+  // 3. Busca filmes por categoria (ignora maiúsculas/minúsculas usando LOWER)
+  buscarPorCategoria: async (categoria) => {
+    const db = await conectarBanco();
+    return await db.all(
+      'SELECT * FROM filmes WHERE LOWER(categoria) = LOWER(?)', 
+      [categoria]
+    );
+  },
+
+  // 4. Busca filmes por ano
+  buscarPorAno: async (ano) => {
+    const db = await conectarBanco();
+    return await db.all('SELECT * FROM filmes WHERE ano = ?', [ano]);
+  },
+
+  // 5. Insere um novo filme usando SQL: INSERT INTO
+  criar: async (filme) => {
+    const db = await conectarBanco();
+    const resultado = await db.run(
+      'INSERT INTO filmes (titulo, categoria, ano) VALUES (?, ?, ?)',
+      [filme.titulo, filme.categoria, filme.ano]
+    );
     
-  buscarPorAno: (ano) => filmes.filter(f => f.ano === ano)
+    return {
+      id: resultado.lastID,
+      ...filme
+    };
+  }
 };

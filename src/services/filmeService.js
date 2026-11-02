@@ -1,20 +1,20 @@
 import { filmeRepository } from '../repositories/filmeRepository.js';
 
 export const filmeService = {
-  listarFilmes: (categoria) => {
+  listarFilmes: async (categoria) => {
     if (categoria) {
-      return filmeRepository.buscarPorCategoria(categoria);
+      return await filmeRepository.buscarPorCategoria(categoria);
     }
-    return filmeRepository.buscarTodos();
+    return await filmeRepository.buscarTodos();
   },
 
-  buscarPorId: (id) => {
+  buscarPorId: async (id) => {
     const idNumero = Number(id);
-    return filmeRepository.buscarPorId(idNumero);
+    return await filmeRepository.buscarPorId(idNumero);
   },
 
-  buscarPorAno: (ano) => {
+  buscarPorAno: async (ano) => {
     const anoNumero = Number(ano);
-    return filmeRepository.buscarPorAno(anoNumero);
+    return await filmeRepository.buscarPorAno(anoNumero);
   }
 };
