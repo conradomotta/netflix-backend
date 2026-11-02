@@ -1,19 +1,22 @@
+import 'dotenv/config';
 import express from 'express';
 import filmeRoutes from './src/routes/filmeRoutes.js';
+import tmdbRoutes from './src/routes/tmdbRoutes.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Rota principal
+// Rota de boas-vindas
 app.get('/', (req, res) => {
-  res.send('🎬 Bem-vindo à API do Clone da Netflix (Módulo 2)!');
+  res.send('🎬 Bem-vindo à API do Clone da Netflix com integração ao TMDB!');
 });
 
-// Registra as rotas de filmes
+// Rotas locais e rotas externas
 app.use(filmeRoutes);
+app.use(tmdbRoutes);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor refatorado rodando em http://localhost:3000`);
+  console.log(`🚀 Servidor rodando com sucesso em http://localhost:${PORT}`);
 });
