@@ -4,8 +4,8 @@ info:
   seq: 2
 
 http:
-  method: DELETE
-  url: http://localhost:3000/filmes/2
+  method: GET
+  url: http://localhost:3000/filmes/3
   body:
     type: json
     data: ""
